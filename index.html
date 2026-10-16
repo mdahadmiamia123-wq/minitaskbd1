@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini Task Ad BD</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icon CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Hind_Siliguri:wght@400;600;700&display=swap');
+        body { font-family: 'Hind Siliguri', sans-serif; background-color: #f1f5f9; }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen text-slate-800">
+
+    <!-- App Main Container -->
+    <div id="app" class="max-w-md mx-auto bg-white min-h-screen shadow-2xl relative pb-20 border-x border-slate-200">
+
+        <!-- Header (Only Visible After Login) -->
+        <header id="mainHeader" class="hidden bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-4 justify-between items-center shadow-md sticky top-0 z-40">
+            <h1 class="text-xl font-bold flex items-center gap-2"><i class="fa-solid fa-coins text-yellow-300"></i> Mini Task Ad BD</h1>
+            <button onclick="toggleMenu()" class="text-2xl focus:outline-none hover:text-yellow-300 transition"><i class="fa-solid fa-bars"></i></button>
+        </header>
+
+        <!-- Dropdown Menu -->
+        <div id="sideMenu" class="hidden absolute top-16 right-0 w-64 bg-white shadow-2xl z-50 border border-slate-200 rounded-bl-2xl p-4">
+            <button onclick="openSpinModal()" class="w-full text-left py-2.5 px-3 hover:bg-indigo-50 rounded-xl flex items-center gap-3 font-semibold text-indigo-600 transition">
+                <i class="fa-solid fa-dharmachakra text-lg"></i> লাকি স্পিন (Daily Spin)
+            </button>
+            <hr class="my-2 border-slate-100">
+            <button onclick="logout()" class="w-full text-left py-2.5 px-3 hover:bg-red-50 rounded-xl flex items-center gap-3 font-semibold text-red-600 transition">
+                <i class="fa-solid fa-right-from-bracket text-lg"></i> লগআউট
+            </button>
+        </div>
+
+        <!-- ================= 1. REGISTER PAGE (First Screen) ================= -->
+        <section id="registerSection" class="p-6">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center text-3xl mx-auto mb-2 shadow-inner">
+                    <i class="fa-solid fa-user-plus"></i>
+                </div>
+                <h1 class="text-2xl font-bold text-indigo-700">Mini Task Ad BD</h1>
+                <p class="text-xs text-slate-500 mt-1">প্রথমে আপনার অ্যাকাউন্ট রেজিস্টার করুন</p>
+            </div>
+
+            <div class="space-y-4 bg-slate-50 p-5 rounded-2xl border border-slate-200 shadow-sm">
+                <div>
+                    <label class="block text-sm font-semibold mb-1 text-slate-600">সঠিক জিমেইল (Gmail)</label>
+                    <input type="email" id="signupEmail" placeholder="example@gmail.com" class="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none bg-white">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold mb-1 text-slate-600">পাসওয়ার্ড দিন</label>
+                    <input type="password" id="signupPassword" placeholder="********" class="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none bg-white">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold mb-1 text-slate-600">কনফার্ম পাসওয়ার্ড</label>
+                    <input type="password" id="signupConfirmPassword" placeholder="********" class="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none bg-white">
+                </div>
+                <!-- Captcha Box -->
+                <div class="bg-white p-3 rounded-xl border border-slate-200 flex items-center justify-between">
+                    <span id="captchaText" class="font-bold tracking-widest text-indigo-700 bg-indigo-100 px-4 py-1.5 rounded-lg text-lg"></span>
+                    <input type="text" id="captchaInput" placeholder="কোড লিখুন" class="w-28 p-2 border border-slate-300 rounded-lg text-center font-bold outline-none">
+                </div>
+                <button onclick="handleSignup()" class="w-full bg-emerald-600 text-white py-3.5 rounded-xl font-bold hover:bg-emerald-700 transition shadow-lg shadow-emerald-200">রেজিস্ট্রেশন করুন</button>
+            </div>
+            
+            <p class="text-center text-xs text-slate-500 mt-4">
+                আগে থেকেই অ্যাকাউন্ট আছে? <a href="#" onclick="showLoginPage()" class="text-indigo-600 font-bold underline">লগইন করুন</a>
+            </p>
+        </section>
+
+        <!-- ================= 2. LOGIN PAGE (Second Screen) ================= -->
+        <section id="loginSection" class="hidden p-6">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center text-3xl mx-auto mb-2 shadow-inner">
+                    <i class="fa-solid fa-lock"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-indigo-700">অ্যাকাউন্টে প্রবেশ করুন</h2>
+                <p class="text-xs text-slate-500 mt-1">আপনার রেজিস্টারকৃত জিমেইল ও পাসওয়ার্ড দিন</p>
+            </div>
+
+            <div class="space-y-4 bg-slate-50 p-5 rounded-2xl border border-slate-200 shadow-sm">
+                <div>
+                    <label class="block text-sm font-semibold mb-1 text-slate-600">আপনার জিমেইল (Gmail)</label>
+                    <input type="email" id="loginEmail" placeholder="example@gmail.com" class="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none bg-white">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold mb-1 text-slate-600">পাসওয়ার্ড</label>
+                    <input type="password" id="loginPassword" placeholder="********" class="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none bg-white">
+                </div>
+                <button onclick="handleLogin()" class="w-full bg-indigo-600 text-white py-3.5 rounded-xl font-bold hover:bg-indigo-700 transition shadow-lg shadow-indigo-200">লগইন করুন</button>
+            </div>
+
+            <p class="text-center text-xs text-slate-500 mt-4">
+                নতুন অ্যাকাউন্ট তৈরি করতে চান? <a href="#" onclick="showRegisterPage()" class="text-indigo-600 font-bold underline">রেজিস্ট্রেশন করুন</a>
+            </p>
+        </section>
+
+        <!-- Loading Screen (Auto Loading between Register -> Login) -->
+        <div id="loadingOverlay" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex flex-col justify-center items-center z-50 text-white">
+            <div class="w-12 h-12 border-4 border-white border-t-indigo-500 rounded-full animate-spin mb-3"></div>
+            <p id="loadingText" class="font-bold text-sm">প্রসেসিং হচ্ছে, অপেক্ষা করুন...</p>
+        </div>
+
+        <!-- ================= 3. DASHBOARD SECTION ================= -->
+        <section id="dashboardSection" class="hidden p-4 space-y-4">
+            
+            <!-- Balance Card -->
+            <div class="bg-gradient-to-br from-indigo-600 via-blue-600 to-indigo-800 rounded-3xl p-6 text-white shadow-xl text-center relative overflow-hidden">
+                <p class="text-xs font-medium uppercase tracking-wider text-indigo-200">বর্তমান অ্যাকাউন্টের ব্যালেন্স</p>
+                <h2 class="text-4xl font-extrabold mt-1">৳ <span id="userBalance">42</span></h2>
+                <button onclick="requestWithdraw()" class="mt-4 bg-white text-indigo-700 px-6 py-2.5 rounded-full font-bold shadow-md hover:bg-indigo-50 transition active:scale-95">উইথড্র করুন (৳৬৫০)</button>
+            </div>
+
+            <!-- Live Withdrawal Ticker (3 Seconds Rotation) -->
+            <div class="bg-amber-50 border border-amber-200 text-amber-900 p-2.5 rounded-xl text-xs font-semibold flex items-center gap-2 shadow-sm">
+                <i class="fa-solid fa-bullhorn text-amber-600 text-sm animate-pulse"></i>
+                <div id="tickerText" class="truncate">লিখন ভাই 600 টাকা উইথড্র দিয়েছেন।</div>
+            </div>
+
+            <!-- Top Winners / Leaderboard -->
+            <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200">
+                <h3 class="font-bold text-sm text-slate-600 mb-3 flex items-center gap-2"><i class="fa-solid fa-trophy text-amber-500"></i> শীর্ষ বিজয়ীগণ (Leaderboard)</h3>
+                <div class="grid grid-cols-3 gap-2" id="leaderboardContainer">
+                    <!-- Dynamic Leaderboard -->
+                </div>
+            </div>
+
+            <!-- Task List Section -->
+            <div class="space-y-3">
+                <h3 class="font-bold text-slate-700 text-base">টাস্ক সম্পন্ন করে আয় করুন</h3>
+                
+                <!-- Task Card 1 -->
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex justify-between items-center hover:border-indigo-300 transition">
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-800">টাস্ক ১: অ্যাপে সাইন আপ করুন</h4>
+                        <p class="text-xs text-slate-500 mt-0.5">সুন্দর মতো সাইন আপ না করলে টাকা মিলবে না</p>
+                        <p class="text-xs font-bold text-emerald-600 mt-1">রিওয়ার্ড: ৳৪০</p>
+                    </div>
+                    <button onclick="openTask('https://auctionr.org/4/2cceb1a8175f8298fc3dc0e72a53411d')" class="bg-indigo-600 text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-indigo-700 transition shadow-sm">কাজ করুন</button>
+                </div>
+
+                <!-- Task Card 2 -->
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex justify-between items-center hover:border-indigo-300 transition">
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-800">টাস্ক ২: নতুন অ্যাকাউন্টে ভিজিট</h4>
+                        <p class="text-xs text-slate-500 mt-0.5">অফারটি সঠিকভাবে পূরণ করুন</p>
+                        <p class="text-xs font-bold text-emerald-600 mt-1">রিওয়ার্ড: ৳৬০</p>
+                    </div>
+                    <button onclick="openTask('https://asiafilm.org/4/2d3db6589102c7f18c1138d55e9950e6')" class="bg-indigo-600 text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-indigo-700 transition shadow-sm">কাজ করুন</button>
+                </div>
+
+                <!-- Task Card 3 -->
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex justify-between items-center hover:border-indigo-300 transition">
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-800">টাস্ক ৩: অফার রেজিস্ট্রেশন</h4>
+                        <p class="text-xs text-slate-500 mt-0.5">সাইটে ঢুকেই রেজিস্ট্রেশন করুন</p>
+                        <p class="text-xs font-bold text-emerald-600 mt-1">রিওয়ার্ড: ৳৫০</p>
+                    </div>
+                    <button onclick="openTask('https://auctionr.org/4/5695ad5540530fd11b748a6a147ff9d9')" class="bg-indigo-600 text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-indigo-700 transition shadow-sm">কাজ করুন</button>
+                </div>
+            </div>
+
+            <!-- Referral Link Box -->
+            <div class="bg-indigo-50 border border-indigo-200 p-4 rounded-2xl">
+                <h4 class="font-bold text-xs text-indigo-900 uppercase tracking-wider mb-1"><i class="fa-solid fa-users text-indigo-600"></i> আপনার রেফারেল লিংক</h4>
+                <p class="text-xs text-slate-600 mb-2">কাউকে শেয়ার করলে সে টাস্ক ১টি সম্পন্ন করলেই পাবেন ৳১০০ রেফার বোনাস!</p>
+                <div class="flex gap-2">
+                    <input type="text" id="refLinkInput" readonly class="w-full text-xs p-2 bg-white border border-indigo-200 rounded-lg font-mono text-indigo-700 outline-none">
+                    <button onclick="copyRefLink()" class="bg-indigo-600 text-white text-xs px-3 py-2 rounded-lg font-bold hover:bg-indigo-700">কপি</button>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Spin Wheel Modal (Daily Spin) -->
+        <div id="spinModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex justify-center items-center z-50 p-4">
+            <div class="bg-white rounded-3xl p-6 w-full max-w-sm text-center relative shadow-2xl">
+                <button onclick="closeSpinModal()" class="absolute top-4 right-4 text-slate-400 font-bold text-2xl hover:text-slate-600">&times;</button>
+                <div class="w-16 h-16 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center text-2xl mx-auto mb-3">
+                    <i class="fa-solid fa-dharmachakra"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-1 text-slate-800">দৈনিক লাকি স্পিন</h3>
+                <p class="text-xs text-slate-500 mb-4">প্রতি ২৪ ঘণ্টায় একবার স্পিন ঘুরিয়ে বোনাস নিতে পারেন!</p>
+                
+                <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 mb-4 shadow-inner">
+                    <span id="spinResultText" class="text-xl font-extrabold text-indigo-700">স্পিন করতে নিচে চাপ দিন</span>
+                </div>
+                
+                <button id="spinBtn" onclick="spinWheel()" class="w-full bg-indigo-600 text-white py-3.5 rounded-xl font-bold hover:bg-indigo-700 transition shadow-lg shadow-indigo-200">স্পিন ঘুরান</button>
+                <p id="spinNotice" class="text-xs text-rose-500 mt-2 font-semibold"></p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ================= JAVASCRIPT LOGIC ================= -->
+    <script>
+        let generatedCaptcha = "";
+
+        // Captcha Generator
+        function generateCaptchaCode() {
+            const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            generatedCaptcha = "";
+            for (let i = 0; i < 4; i++) {
+                generatedCaptcha += chars[Math.floor(Math.random() * chars.length)];
+            }
+            document.getElementById('captchaText').innerText = generatedCaptcha;
+        }
+        generateCaptchaCode();
+
+        // Switch Screen Handlers
+        function showRegisterPage() {
+            document.getElementById('registerSection').classList.remove('hidden');
+            document.getElementById('loginSection').classList.add('hidden');
+            document.getElementById('mainHeader').classList.add('hidden');
+            document.getElementById('mainHeader').classList.remove('flex');
+            generateCaptchaCode();
+        }
+
+        function showLoginPage() {
+            document.getElementById('registerSection').classList.add('hidden');
+            document.getElementById('loginSection').classList.remove('hidden');
+            document.getElementById('mainHeader').classList.add('hidden');
+            document.getElementById('mainHeader').classList.remove('flex');
+        }
+
+        // 1. Signup Logic (Strict Verification)
+        function handleSignup() {
+            const email = document.getElementById('signupEmail').value.trim();
+            const pass = document.getElementById('signupPassword').value;
+            const confirmPass = document.getElementById('signupConfirmPassword').value;
+            const captchaInput = document.getElementById('captchaInput').value.trim();
+
+            if (!email || !email.includes('@') || !email.includes('.')) {
+                alert("দয়া করে একটি সঠিক জিমেইল অ্যাড্রেস লিখুন!");
+                return;
+            }
+            if (!pass || pass.length < 6) {
+                alert("পাসওয়ার্ড অন্তত ৬ অক্ষরের হতে হবে!");
+                return;
+            }
+            if (pass !== confirmPass) {
+                alert("কনফার্ম পাসওয়ার্ড মিলছে না!");
+                return;
+            }
+            if (captchaInput.toUpperCase() !== generatedCaptcha) {
+                alert("ক্যাপচা কোড ভুল হয়েছে! সঠিকভাবে লিখুন।");
+                generateCaptchaCode();
+                return;
+            }
+
+            // Save credentials strictly to local storage
+            localStorage.setItem('registered_email', email.toLowerCase());
+            localStorage.setItem('registered_pass', pass);
+
+            // Show Auto Loading Simulation before going to login page
+            showLoading("অ্যাকাউন্ট তৈরি হচ্ছে... লগইন পেজে নেওয়া হচ্ছে...", () => {
+                showLoginPage();
+                // Auto fill email on login form for better user experience
+                document.getElementById('loginEmail').value = email;
+            });
+        }
+
+        // 2. Strict Login Verification Logic
+        function handleLogin() {
+            const inputEmail = document.getElementById('loginEmail').value.trim().toLowerCase();
+            const inputPass = document.getElementById('loginPassword').value;
+
+            const savedEmail = localStorage.getItem('registered_email');
+            const savedPass = localStorage.getItem('registered_pass');
+
+            if (!savedEmail || !savedPass) {
+                alert("কোনো নিবন্ধিত অ্যাকাউন্ট পাওয়া যায়নি! আগে রেজিস্ট্রেশন করুন।");
+                showRegisterPage();
+                return;
+            }
+
+            // Check if input EXACTLY matches saved credentials
+            if (inputEmail === savedEmail && inputPass === savedPass) {
+                showLoading("লগইন সফল হচ্ছে...", () => {
+                    document.getElementById('loginSection').classList.add('hidden');
+                    document.getElementById('dashboardSection').classList.remove('hidden');
+                    document.getElementById('mainHeader').classList.remove('hidden');
+                    document.getElementById('mainHeader').classList.add('flex');
+                    document.getElementById('userBalance').innerText = "42"; // Initial 42 BDT Bonus
+                    document.getElementById('refLinkInput').value = window.location.href + "?ref=" + btoa(inputEmail).substring(0, 8);
+                });
+            } else {
+                alert("ভুল জিমেইল অথবা পাসওয়ার্ড দিয়েছেন! সঠিক তথ্য দিয়ে আবার চেষ্টা করুন।");
+            }
+        }
+
+        // Loading Screen Helper
+        function showLoading(msg, callback) {
+            const overlay = document.getElementById('loadingOverlay');
+            document.getElementById('loadingText').innerText = msg;
+            overlay.classList.remove('hidden');
+            setTimeout(() => {
+                overlay.classList.add('hidden');
+                if(callback) callback();
+            }, 1500);
+        }
+
+        // 3. Live Withdrawal Ticker (3 Seconds Change)
+        const tickerMessages = [
+            "লিখন ভাই 600 টাকা উইথড্র দিয়েছেন।",
+            "রহিম সাহেব 700 টাকা উইথড্র দিয়েছেন।",
+            "সাকিবুল ইসলাম 500 টাকা উইথড্র দিয়েছেন।",
+            "ফাহমিদা আক্তার 1000 টাকা উইথড্র দিয়েছেন।",
+            "কামাল হোসেন 450 টাকা উইথড্র দিয়েছেন।",
+            "তানভীর হোসেন 650 টাকা উইথড্র দিয়েছেন।"
+        ];
+        let tickerIndex = 0;
+        setInterval(() => {
+            tickerIndex = (tickerIndex + 1) % tickerMessages.length;
+            document.getElementById('tickerText').innerText = tickerMessages[tickerIndex];
+        }, 3000);
+
+        // 4. Leaderboard Setup (Top 3)
+        const leaders = [
+            { name: "লিখন আহমেদ", amount: "৳১,০০,০০০", crown: true },
+            { name: "নাসির উদ্দিন", amount: "৳৮৫,০০০", crown: false },
+            { name: "সাব্বির হোসেন", amount: "৳৭২,০০০", crown: false }
+        ];
+
+        function renderLeaderboard() {
+            const container = document.getElementById('leaderboardContainer');
+            container.innerHTML = leaders.map(l => `
+                <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200 relative flex flex-col items-center">
+                    ${l.crown ? '<span class="absolute -top-3 text-amber-500 text-base drop-shadow"><i class="fa-solid fa-crown"></i></span>' : ''}
+                    <div class="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center font-bold text-indigo-700 mb-1 mt-1 border border-indigo-200">
+                        ${l.name[0]}
+                    </div>
+                    <span class="text-xs font-bold text-slate-800 truncate w-full text-center">${l.name}</span>
+                    <span class="text-[10px] text-emerald-600 font-bold">${l.amount}</span>
+                </div>
+            `).join('');
+        }
+        renderLeaderboard();
+
+        // 5. Menu & Logout
+        function toggleMenu() {
+            document.getElementById('sideMenu').classList.toggle('hidden');
+        }
+
+        function logout() {
+            document.getElementById('dashboardSection').classList.add('hidden');
+            showLoginPage();
+            toggleMenu();
+        }
+
+        // 6. Open Task Link & Return Alert Warning
+        function openTask(url) {
+            window.open(url, '_blank');
+            setTimeout(() => {
+                alert("বিজ্ঞপ্তি: আপনি কোনো সাইটে সাইন আপ করেননি, এজন্য আপনার ব্যালেন্সে কোনো টাকা যোগ করা হয়নি।");
+            }, 3000);
+        }
+
+        // 7. Withdraw Request (650 BDT Trigger & Auto Lock)
+        function requestWithdraw() {
+            let balance = parseInt(document.getElementById('userBalance').innerText);
+            if (balance >= 650) {
+                alert("আপনি ফেক রেফার করার কারণে আপনার অ্যাকাউন্ট সাসপেন্ড করা হলো।");
+                localStorage.clear();
+                alert("আপনার অ্যাকাউন্টটি চিরতরে লক করা হয়েছে!");
+                location.reload();
+            } else {
+                alert("উইথড্র করার জন্য আপনার অ্যাকাউন্টে পর্যাপ্ত (অন্তত ৬৫০ টাকা) ব্যালেন্স নেই।");
+            }
+        }
+
+        // 8. Daily Spin Wheel Logic (24 Hours Restriction)
+        function openSpinModal() {
+            toggleMenu();
+            const lastSpinTime = localStorage.getItem('minitask_last_spin');
+            const now = new Date().getTime();
+
+            if (lastSpinTime && (now - lastSpinTime < 24 * 60 * 60 * 1000)) {
+                document.getElementById('spinBtn').disabled = true;
+                document.getElementById('spinBtn').classList.add('opacity-50', 'cursor-not-allowed');
+                document.getElementById('spinNotice').innerText = "আপনি ২৪ ঘণ্টার মধ্যে একবার স্পিন করে ফেলেছেন। পরে চেষ্টা করুন।";
+            } else {
+                document.getElementById('spinBtn').disabled = false;
+                document.getElementById('spinBtn').classList.remove('opacity-50', 'cursor-not-allowed');
+                document.getElementById('spinNotice').innerText = "";
+            }
+
+            document.getElementById('spinModal').classList.remove('hidden');
+        }
+
+        function closeSpinModal() {
+            document.getElementById('spinModal').classList.add('hidden');
+        }
+
+        function spinWheel() {
+            const rewards = [10, 20, 40, 60];
+            const wonAmount = rewards[Math.floor(Math.random() * rewards.length)];
+
+            document.getElementById('spinResultText').innerText = `অভিনন্দন! আপনি পেয়েছেন ৳${wonAmount}`;
+            
+            let currentBal = parseInt(document.getElementById('userBalance').innerText);
+            currentBal += wonAmount;
+            document.getElementById('userBalance').innerText = currentBal;
+
+            localStorage.setItem('minitask_last_spin', new Date().getTime());
+            document.getElementById('spinBtn').disabled = true;
+            document.getElementById('spinBtn').classList.add('opacity-50', 'cursor-not-allowed');
+            document.getElementById('spinNotice').innerText = "স্পিন সম্পন্ন হয়েছে! ২৪ ঘণ্টা পর আবার করতে পারবেন।";
+        }
+
+        // Copy Referral Link
+        function copyRefLink() {
+            const input = document.getElementById('refLinkInput');
+            input.select();
+            document.execCommand('copy');
+            alert("রেফারেল লিংক কপি করা হয়েছে!");
+        }
+    </script>
+</body>
+</html>
